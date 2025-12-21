@@ -9,7 +9,7 @@ public class SleepingSession {
     private final LocalDateTime finishSleep;
     private final QualitySleep qualitySleep;
 
-    private final static DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+    private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
 
     public SleepingSession(String line) {
         String[] split = line.split(";");
