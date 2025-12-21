@@ -34,6 +34,6 @@ public class TestFunctionMaxSessionDuration {
         FunctionMaxSessionDuration f = new FunctionMaxSessionDuration();
         SleepAnalysisResult result = f.apply(sessions);
 
-        Assertions.assertEquals(8L*60 + 27L, result.getValue());
+        Assertions.assertEquals(8L * 60 + 27L, result.getValue());
     }
 }
