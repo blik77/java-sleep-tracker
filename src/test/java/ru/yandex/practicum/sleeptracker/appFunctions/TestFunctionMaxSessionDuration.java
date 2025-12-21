@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestFunctionMaxSessionDuration {
-    public List<SleepingSession> sessions = new ArrayList<SleepingSession>();
+    public List<SleepingSession> sessions = new ArrayList<>();
+
     @BeforeEach
     public void setUp() {
         sessions.add(new SleepingSession("20.12.25 23:59;21.12.25 00:09;GOOD"));

@@ -11,6 +11,7 @@ import java.util.List;
 
 public class TestFunctionCountSleepSessions {
     public List<SleepingSession> sessions = new ArrayList<>();
+
     @BeforeEach
     public void setUp() {
         sessions.add(new SleepingSession("01.10.25 23:15;02.10.25 07:30;GOOD"));
