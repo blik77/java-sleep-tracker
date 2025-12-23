@@ -56,4 +56,25 @@ public class TestFunctionCountSleeplessNights {
 
         Assertions.assertEquals(0L, result.getValue());
     }
+
+    @Test
+    public void shouldCountSleeplessNightsZeroWhenStartAfter0000() {
+        sessions.clear();
+        sessions.add(new SleepingSession("06.10.25 00:00;06.10.25 06:01;GOOD"));
+        sessions.add(new SleepingSession("07.10.25 01:00;07.10.25 07:00;GOOD"));
+        FunctionCountSleeplessNights f = new FunctionCountSleeplessNights();
+        SleepAnalysisResult result = f.apply(sessions);
+
+        Assertions.assertEquals(0L, result.getValue());
+    }
+
+    @Test
+    public void shouldCountSleeplessNightsZeroWhenDifMonths() {
+        sessions.clear();
+        sessions.add(new SleepingSession("31.12.25 23:23;01.01.26 06:06;GOOD"));
+        FunctionCountSleeplessNights f = new FunctionCountSleeplessNights();
+        SleepAnalysisResult result = f.apply(sessions);
+
+        Assertions.assertEquals(0L, result.getValue());
+    }
 }

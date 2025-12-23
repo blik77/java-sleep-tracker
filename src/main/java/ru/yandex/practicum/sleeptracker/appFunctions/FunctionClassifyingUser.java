@@ -5,17 +5,17 @@ import ru.yandex.practicum.sleeptracker.SleepingSession;
 import ru.yandex.practicum.sleeptracker.UserChronotype;
 
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static java.util.Map.entry;
 
 public class FunctionClassifyingUser implements Function<List<SleepingSession>, SleepAnalysisResult> {
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sleepingSessions) {
-        Predicate<SleepingSession> isSleepingNight = s ->
-            s.getStartSleep().toLocalDate().isBefore(s.getFinishSleep().toLocalDate())
-            || s.getStartSleep().toLocalTime().isBefore(LocalTime.of(6, 0));
-
         Predicate<SleepingSession> isOwl = s -> (
                 s.getStartSleep().toLocalTime().isAfter(LocalTime.of(23, 0))
                 || s.getStartSleep().toLocalTime().isBefore(LocalTime.of(6, 0))
@@ -27,16 +27,28 @@ public class FunctionClassifyingUser implements Function<List<SleepingSession>, 
             && s.getFinishSleep().toLocalTime().isBefore(LocalTime.of(7, 0))
         );
 
-        List<SleepingSession> sleepNights = sleepingSessions.stream().filter(isSleepingNight).toList();
-
-        long countOwl = sleepNights.stream().filter(isOwl).count();
-        long countLark = sleepNights.stream().filter(isLark).count();
-        long countPigeon = sleepNights.size() - countOwl - countLark;
+        Map<UserChronotype, Integer> counter = new HashMap<>(Map.ofEntries(
+            entry(UserChronotype.OWL, 0),
+            entry(UserChronotype.LARK, 0),
+            entry(UserChronotype.PIGEON, 0)
+        ));
+        sleepingSessions.stream().filter(FunctionCountSleeplessNights.isSleepingNight)
+        .forEach(s -> {
+            if (isOwl.test(s)) {
+                counter.put(UserChronotype.OWL, counter.get(UserChronotype.OWL) + 1);
+            } else if (isLark.test(s)) {
+                counter.put(UserChronotype.LARK, counter.get(UserChronotype.LARK) + 1);
+            } else {
+                counter.put(UserChronotype.PIGEON, counter.get(UserChronotype.PIGEON) + 1);
+            }
+        });
 
         UserChronotype userTpe = UserChronotype.PIGEON;
-        if (countOwl > countLark && countOwl > countPigeon) {
+        if (counter.get(UserChronotype.OWL) > counter.get(UserChronotype.LARK)
+            && counter.get(UserChronotype.OWL) > counter.get(UserChronotype.PIGEON)) {
             userTpe = UserChronotype.OWL;
-        } else if (countLark > countOwl && countLark > countPigeon) {
+        } else if (counter.get(UserChronotype.LARK) > counter.get(UserChronotype.OWL)
+                && counter.get(UserChronotype.LARK) > counter.get(UserChronotype.PIGEON)) {
             userTpe = UserChronotype.LARK;
         }
 

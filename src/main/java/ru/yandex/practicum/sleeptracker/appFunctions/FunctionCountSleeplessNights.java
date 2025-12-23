@@ -11,6 +11,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class FunctionCountSleeplessNights implements Function<List<SleepingSession>, SleepAnalysisResult> {
+    public static final Predicate<SleepingSession> isSleepingNight = s ->
+            s.getStartSleep().toLocalDate().isBefore(s.getFinishSleep().toLocalDate())
+                    || s.getStartSleep().toLocalTime().isBefore(LocalTime.of(6, 0));
+
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sleepingSessions) {
         long count = 0;
@@ -25,11 +29,6 @@ public class FunctionCountSleeplessNights implements Function<List<SleepingSessi
             }
 
             int countAllNights = Period.between(firstData, lastData).getDays() + 1;
-
-            Predicate<SleepingSession> isSleepingNight = s ->
-                s.getStartSleep().toLocalDate().isBefore(s.getFinishSleep().toLocalDate())
-                || s.getStartSleep().toLocalTime().isBefore(LocalTime.of(6, 0));
-
             long sleepNights = sleepingSessions.stream().filter(isSleepingNight).count();
 
             count = countAllNights - sleepNights;
